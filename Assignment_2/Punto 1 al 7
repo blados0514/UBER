@@ -106,11 +106,12 @@ ln_valor_distancia NUMBER:=0;
 ln_valor_tiempo NUMBER:=0;
 ln_suma_total NUMBER :=0;
 
-
-ln_hora_salida NUMBER:=0;
-ln_minutos_salida NUMBER:=0;
 ln_hora_llegada NUMBER:=0;
 ln_minutos_llegada NUMBER:=0;
+ln_hora_salida NUMBER:=0;
+ln_minutos_salida NUMBER:=0;
+
+ln_tiempo_minutos NUMBER:=0;
 
 
 
@@ -119,9 +120,16 @@ BEGIN
         
             IF UPPER(ln_index.estado) IN ('REALIZADO') THEN
                     
+                    ln_hora_llegada:=substr(ln_index.hora_llegada,12,2);
+                    ln_hora_salida:=substr(ln_index.hora_llegada,12,2);
+                    ln_minutos_llegada:=substr(ln_index.hora_llegada,15,2);
+                    ln_minutos_salida:=substr(ln_index.hora_llegada,15,2);
+                    
+                    ln_tiempo_minutos := (ln_hora_salida - ln_hora_llegada ) / 60;
+                    ln_tiempo_minutos := ln_minutos_salida - ln_minutos_llegada;
                    
                    ln_suma_total:= VALOR_DISTANCIA(ln_index.distancia_recorrida,ln_index.descripcion_ciudad);
-                   --ln_valor_tiempo:= VALOR_TIEMPO(ln_index.descripcion_ciudad);
+                   ln_valor_tiempo:= VALOR_TIEMPO(ln_tiempo_minutos, ln_index.descripcion_ciudad);
                    
                    ln_suma_total := ln_suma_total + ln_index.valor_base;
                    
