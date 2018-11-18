@@ -90,3 +90,52 @@ WHEN OTHERS THEN
 RETURN ln_resultado;
 
 END;
+
+--PUNTO 7 
+
+create or replace PROCEDURE CALCULAR_TARIFA (an_id_viaje NUMBER) AS
+
+CURSOR lcur_viaje IS SELECT vi.id, ev.estado, ci.descripcion_ciudad AS descripcion_ciudad, vi.distancia_recorrida AS distancia_recorrida, 
+                     vi.hora_llegada, vi.hora_salida, ci.valor_base AS valor_base  FROM factura fa
+                     INNER JOIN viajes vi ON vi.id = fa.id
+                     INNER JOIN estado_viaje ev ON ev.id = vi.id
+                     INNER JOIN ciudades ci ON ci.id = vi.id 
+                     WHERE vi.id = an_id_viaje;
+
+ln_valor_distancia NUMBER:=0;
+ln_valor_tiempo NUMBER:=0;
+ln_suma_total NUMBER :=0;
+
+
+ln_hora_salida NUMBER:=0;
+ln_minutos_salida NUMBER:=0;
+ln_hora_llegada NUMBER:=0;
+ln_minutos_llegada NUMBER:=0;
+
+
+
+BEGIN
+        FOR ln_index IN lcur_viaje LOOP
+        
+            IF UPPER(ln_index.estado) IN ('REALIZADO') THEN
+                    
+                   
+                   ln_suma_total:= VALOR_DISTANCIA(ln_index.distancia_recorrida,ln_index.descripcion_ciudad);
+                   --ln_valor_tiempo:= VALOR_TIEMPO(ln_index.descripcion_ciudad);
+                   
+                   ln_suma_total := ln_suma_total + ln_index.valor_base;
+                   
+                UPDATE detalle_factura SET valor_pago = ln_suma_total
+                where factura_id = an_id_viaje;
+                
+            ELSE
+                UPDATE detalle_factura SET valor_pago = 0, vaor_sobrecosto = 0, valor_reserva = 0, valor_otros = 0
+                where factura_id = an_id_viaje;
+            END IF;
+        END LOOP;
+
+EXCEPTION 
+WHEN OTHERS THEN
+    UPDATE detalle_factura SET valor_pago = 0, vaor_sobrecosto = 0, valor_reserva = 0, valor_otros = 0
+    where factura_id = an_id_viaje;
+END;
