@@ -34,3 +34,32 @@ CREATE INDEX IDX_VIAJE ON VIAJES(ESTADO_VIAJE_ID);
 ALTER TABLE CIUDADES ADD VALOR_KILOMETRO NUMBER(10,6);
 ALTER TABLE CIUDADES ADD VALOR_MINUTO NUMBER(10,6);
 ALTER TABLE CIUDADES ADD VALOR_BASE	NUMBER;
+
+--PUNTO 5
+
+
+create or replace FUNCTION VALOR_DISTANCIA (an_distancia NUMBER, av_descripcion_ciudad VARCHAR2) RETURN NUMBER AS
+
+ln_resultado NUMBER:=0;
+ln_valor_kilometro NUMBER:=0;
+ex_distancia EXCEPTION;
+
+BEGIN
+    IF AN_DISTANCIA > 0 THEN
+
+        SELECT valor_kilometro INTO ln_valor_kilometro  FROM CIUDADES 
+        WHERE UPPER(descripcion_ciudad) = UPPER(av_descripcion_ciudad);
+
+            ln_resultado := an_distancia * ln_valor_kilometro;
+    ELSE
+        RAISE ex_distancia;
+    END IF;
+
+        RETURN ln_resultado;
+
+EXCEPTION 
+WHEN OTHERS THEN 
+-- Retorna 0 en el error
+RETURN ln_resultado;
+
+END;
