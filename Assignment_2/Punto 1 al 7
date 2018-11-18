@@ -125,7 +125,7 @@ BEGIN
                     ln_minutos_llegada:=substr(ln_index.hora_llegada,15,2);
                     ln_minutos_salida:=substr(ln_index.hora_llegada,15,2);
                     
-                    ln_tiempo_minutos := (ln_hora_salida - ln_hora_llegada ) / 60;
+                    ln_tiempo_minutos := (ln_hora_salida - ln_hora_llegada ) * 60;
                     ln_tiempo_minutos := ln_minutos_salida - ln_minutos_llegada;
                    
                    ln_suma_total:= VALOR_DISTANCIA(ln_index.distancia_recorrida,ln_index.descripcion_ciudad);
