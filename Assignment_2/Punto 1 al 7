@@ -63,3 +63,30 @@ WHEN OTHERS THEN
 RETURN ln_resultado;
 
 END;
+
+--PUNTO 6 
+
+create or replace FUNCTION VALOR_TIEMPO (an_cantidad_munitos NUMBER, av_descripcion_ciudad VARCHAR2) RETURN NUMBER AS
+
+ln_resultado NUMBER:=0;
+ln_valor_minuto NUMBER:=0;
+ex_minutos EXCEPTION;
+
+BEGIN
+    IF an_cantidad_munitos > 0 THEN
+
+        SELECT valor_minuto INTO ln_valor_minuto  FROM CIUDADES 
+        WHERE UPPER(descripcion_ciudad) = UPPER(av_descripcion_ciudad);
+
+            ln_resultado := an_cantidad_munitos * ln_valor_minuto;
+    ELSE
+        RAISE ex_minutos;
+    END IF;
+
+        RETURN ln_resultado;
+
+EXCEPTION 
+WHEN OTHERS THEN 
+RETURN ln_resultado;
+
+END;
